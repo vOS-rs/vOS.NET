@@ -1,0 +1,17 @@
+vOS : Sample file tree
+
+Users
+ \- Tom
+ \- Root
+Applications
+ \- Terminal
+    \- Terminal.vapp
+    \- Echo.vapp
+    \- Copy.vapp
+    \- Move.vapp
+    \- Start.vapp
+    \- TestApp
+       \- TestApp.vexe
+System
+ \- vOS.DLL
+ \- vOS.API.DLL
