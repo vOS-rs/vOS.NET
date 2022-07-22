@@ -117,9 +117,15 @@ namespace vOS
                         throw new Exception("Can't open this file");
                 }
             }
+            catch (TargetInvocationException tie)
+            {
+                Console.WriteLine(tie.InnerException);
+            }
             catch (Exception e)
             {
                 Console.WriteLine("Execution failed: " + e.Message);
+                if (e.InnerException != null)
+                    Console.WriteLine(e.InnerException.Message);
             }
 
             return 1;
@@ -128,23 +134,44 @@ namespace vOS
         private static int ExecuteAssembly(Assembly assembly, string[] args)
         {
             var mains = GetMainsWithHelpAttribute(assembly);
+            var mos = assembly.GetLoadedModules();
+
+            // No main
             if (mains.Count() < 1)
                 throw new Exception("We can't execute this");
+
+            // Multi mains
             if (mains.Count() > 1)
                 Console.WriteLine("Warning: more than one entry point exists");
-            var main = mains.FirstOrDefault();
+
+            // Get the main
+            var main = mains.First();
             object programReturn;
 
+            // Instanciate a class if needed
+            object instance = null;
+
+            if (!main.IsStatic)
+                instance = Activator.CreateInstance(main.DeclaringType);
+
+            // Start the app
             var parameters = main.GetParameters();
-            if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string[]))
-            {
-                programReturn = main.Invoke(null, new object[] { args });
-            }
-            else if (parameters.Length == 0)
-                programReturn = main.Invoke(null, null);
-            else
+
+            if (parameters.Length == 4 && // main(string[] arguments, Guid instance, Guid previousInstance, int windowState)
+                parameters[0].ParameterType == typeof(string[]) &&
+                parameters[1].ParameterType == typeof(Guid) &&
+                parameters[2].ParameterType == typeof(Guid) &&
+                parameters[3].ParameterType == typeof(int))
+                programReturn = main.Invoke(instance, new object[] { args, Guid.NewGuid(), Guid.Empty, 0 }); // Invoke the main with the given arguments and window info
+            else if (parameters.Length == 1 && // main(string[] arguments)
+                     parameters[0].ParameterType == typeof(string[]))
+                programReturn = main.Invoke(instance, new object[] { args }); // Invoke the main with the given arguments
+            else if (parameters.Length == 0) // main()
+                programReturn = main.Invoke(instance, null); // Invoke the main without arguments
+            else // Bad main, ex: main(int index, object value)
                 throw new Exception("Bad Entry Point");
 
+            // Get exit code
             if (programReturn is int exitCode)
                 return exitCode;
             else if (programReturn is Task<int> exitCodeAsync)
@@ -198,9 +225,9 @@ namespace vOS
         // https://docs.microsoft.com/dotnet/csharp/fundamentals/program-structure/main-command-line#overview
         private static bool CheckValidMainMethode(MethodInfo method)
         {
-            // Must be static
+            /*// Must be static
             if (!method.IsStatic)
-                return false;
+                return false;*/
 
             // Must have the name Main
             if (method.Name.ToLower() != "main")
@@ -208,8 +235,18 @@ namespace vOS
 
             // Must have 1 string parameter or not
             var parameters = method.GetParameters();
-            if (parameters.Length == 1 && parameters[0].ParameterType != typeof(string[]) ||
-                            parameters.Length > 1)
+
+            if (// main(string[] arguments, Guid instance, Guid previousInstance, int windowState)
+                parameters.Length == 4 &&
+                parameters[0].ParameterType != typeof(string[]) &&
+                parameters[1].ParameterType != typeof(Guid) &&
+                parameters[2].ParameterType != typeof(Guid) &&
+                parameters[3].ParameterType != typeof(int) ||
+                // main(string[] arguments)
+                parameters.Length == 1 &&
+                parameters[0].ParameterType != typeof(string[]) ||
+                // main()
+                parameters.Length > 1)
                 return false;
 
             // Must return a integer or not
@@ -219,6 +256,34 @@ namespace vOS
 
             return true;
         }
+
+        /*private static bool CheckValidApiMethode(MethodInfo method)
+        {
+            // Must be static
+            if (!method.IsStatic)
+                return false;
+
+            // Must have the name vOS_Init
+            if (method.Name != "vOS_Main")
+                return false;
+
+            // Must have 1 string parameter or not
+            var parameters = method.GetParameters();
+
+            // vOS_Main(Guid instance, Guid previousInstance, string commandLineArguments, int windowState)
+            if (parameters.Length != 4 ||
+                parameters[0].ParameterType != typeof(Guid) ||
+                parameters[1].ParameterType != typeof(Guid) ||
+                parameters[2].ParameterType != typeof(string) ||
+                parameters[3].ParameterType != typeof(int))
+                return false;
+
+            // Must return a integer
+            if (method.ReturnType != typeof(int))
+                return false;
+
+            return true;
+        }*/
 
         // http://www.blackbeltcoder.com/Articles/strings/a-c-command-line-parser
         // https://stackoverflow.com/questions/24047674/how-to-reset-position-in-stringreader-to-begining-of-string

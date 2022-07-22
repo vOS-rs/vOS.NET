@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\System\vOS\vOS.csproj" />
+    <ProjectReference Include="..\..\..\System\vOS.API\vOS.API.csproj" />
   </ItemGroup>
 
 </Project>
