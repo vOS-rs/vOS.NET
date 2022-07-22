@@ -76,9 +76,11 @@ namespace vOS.WPF
             Process.Start("HelloWorldUI");
         }
 
-        private void WindowManager_NewWindow(object sender, UI.Window window)
+        private void WindowManager_NewWindow(object sender, UI.Graphics.Window window)
         {
-            window.OnDraw += Window_OnDraw;
+            //window.OnDraw += Window_OnDraw;
+
+
         }
 
         private void Window_OnDraw(object sender, UI.Drawing.PixelMatrix matrix)

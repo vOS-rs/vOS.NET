@@ -10,9 +10,7 @@
     <!-- 720p (1286 x 749) -->
 
     <Canvas x:Name="canvas" />
-    <RectangleGeometry>
-        
-    </RectangleGeometry>
+    
     <!--<Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
