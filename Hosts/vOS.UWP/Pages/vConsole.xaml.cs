@@ -21,6 +21,8 @@ namespace vOS.UWP.Pages
             var process = Process.Start("terminal", string.Join(" ", Environment.GetCommandLineArgs()));
             //process.WaitUntilExit();
             //Command.Send("terminal " + string.Join(" ", args));
+            
+
         }
 
         private void Write(string value) =>
