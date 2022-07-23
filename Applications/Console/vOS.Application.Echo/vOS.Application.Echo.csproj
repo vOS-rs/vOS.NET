@@ -7,8 +7,6 @@
     <StartupObject></StartupObject>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\System\vOS.API\vOS.API.csproj" />
-  </ItemGroup>
+  <Import Project="..\..\vOS.API.Bridge\vOS.API.Bridge.projitems" Label="Shared" />
 
 </Project>

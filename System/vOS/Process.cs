@@ -72,9 +72,11 @@ namespace vOS
             if (string.IsNullOrEmpty(command) || string.IsNullOrWhiteSpace(command))
                 throw new ArgumentException("Command was empty");
 
-            var result = Regex.Match(command, @"^([\w\-]+)");
-            command = command.Replace(result.Value, string.Empty);
-            var process = new Process(result.Value, command);
+            /*var result = Regex.Match(command, @"^([\w\-]+)");
+            command = command.Replace(result.Value, string.Empty);*/
+
+            var fileName = command.Split(new char[] { ' ' }, 1);
+            var process = new Process(fileName[0], command);
 
             processes.Add(process);
 

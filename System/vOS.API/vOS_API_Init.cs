@@ -4,14 +4,16 @@ using System.Text;
 
 namespace vOS.API
 {
-    public static class vOS_API_Init
+    public class vOS_API_Init
     {
-        private static Guid ProcessId;
+        public Application Application;
 
-        public static string Tag;
+        private Guid ProcessId;
 
-        public static int main(string[] arguments, Guid instance, Guid previousInstance, int windowState)
+        public int Main(string[] arguments, Guid instance, Guid previousInstance, int windowState)
         {
+            Application = new Application();
+
             ProcessId = instance;
             Application.Arguments = arguments;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using vOS.API;
 
 namespace vOS.Application.Echo
 {
@@ -10,17 +9,14 @@ namespace vOS.Application.Echo
 
         public int Main(string[] args)
         {
-            //var args = API.Application.Arguments;
+            vOS.API.Instance.Load();
+            var vArgs = vOS.API.Application.Arguments;
 
-            System.Console.WriteLine(Tag);
-            Tag = Guid.NewGuid().ToString();
-            System.Console.WriteLine(Tag);
+            vArgs[0] = string.Empty;
 
-            args[0] = string.Empty;
+            System.Console.WriteLine(string.Join(" ", vArgs));
 
-            System.Console.WriteLine(string.Join(" ", args));
-
-            BackgroundSpin();
+            //BackgroundSpin();
 
             return 0;
         }

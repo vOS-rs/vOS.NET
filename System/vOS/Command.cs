@@ -25,7 +25,20 @@ namespace vOS
 
             var fileName = args[0];
 
-            // TODO: auto completion
+            if (!File.Exists(fileName))
+            {
+                string relativePath = Path.Combine(Storage.GetFolder(Storage.KnowFolders.Applications), fileName);
+
+                if (!File.Exists(relativePath))
+                {
+                    if (File.Exists(relativePath + ".vexe"))
+                        relativePath += ".vexe";
+                    else if (Directory.Exists(relativePath + ".vapp"))
+                        relativePath += ".vapp";
+                }
+
+                fileName = relativePath;
+            }
 
             try
             {
@@ -37,7 +50,21 @@ namespace vOS
 
                         if (attr.HasFlag(FileAttributes.Directory)) // Folder (Executable folder)
                         {
-                            //var vapp = 
+                            var vapp = new DirectoryInfo(fileName);
+
+                            var vexes = vapp.GetFiles(Path.GetFileNameWithoutExtension(vapp.Name) + ".vexe");
+
+                            if (vexes.Length == 0)
+                                throw new FileNotFoundException();
+
+                            var vexe = vexes.First();
+
+                            var assembly2 = Assembly.LoadFrom(vexe.FullName);
+
+                            var exitCode2 = ExecuteAssembly(assembly2, args);
+
+
+                            return exitCode2;
                         }
                         else // File (Zip)
                         {
@@ -70,19 +97,8 @@ namespace vOS
                         }
                         break;
 
-                    case "":
                     case ".vexe":
-                        // TODO: remove
-                        if (!Path.HasExtension(fileName))
-                            fileName += ".vexe";
-
-                        if (!File.Exists(fileName))
-                        {
-                            string relativePath = GetActualCaseForFileName(Path.Combine(Storage.GetFolder(Storage.KnowFolders.Applications), fileName));
-
-                            if (File.Exists(relativePath))
-                                fileName = relativePath;
-                        }
+                        fileName = GetActualCaseForFileName(fileName);
 
                         /*
                          * In .Net Standart 2 we can't unload assembly so if we execut the same vexe with different name
@@ -246,7 +262,7 @@ namespace vOS
                 parameters.Length == 1 &&
                 parameters[0].ParameterType != typeof(string[]) ||
                 // main()
-                parameters.Length > 1)
+                parameters.Length > 4)
                 return false;
 
             // Must return a integer or not
@@ -328,7 +344,7 @@ namespace vOS
                         }
                         else
                         {
-                            // Parse vargument
+                            // Parse argument
                             start = pos;
                             while (!sr.EndOfStream && !char.IsWhiteSpace((char)sr.Peek()))
                             {
@@ -339,7 +355,8 @@ namespace vOS
                         }
 
                         // Adding the parsed argument
-                        Arguments.Add(result);
+                        if (!string.IsNullOrEmpty(result))
+                            Arguments.Add(result);
                     }
                 }
             }

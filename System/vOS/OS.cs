@@ -1,4 +1,7 @@
-﻿namespace vOS
+﻿using System.IO;
+using System.Reflection;
+
+namespace vOS
 {
     public class OS
     {
@@ -15,6 +18,14 @@
             //AppDomain.CurrentDomain.
             WorkingDirectory = workingDirectory;
             DisplayMode = displayMode;
+
+            LoadAPI();
+        }
+
+        // Make the API accessible to all programm
+        private static void LoadAPI()
+        {
+            Assembly.LoadFile(Path.Combine(Storage.GetFolder(Storage.KnowFolders.System), "vOS.API.dll"));
         }
     }
 }

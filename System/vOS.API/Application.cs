@@ -4,8 +4,8 @@ using System.Text;
 
 namespace vOS.API
 {
-    public static class Application
+    public class Application
     {
-        public static string[] Arguments { get; internal set; }
+        public string[] Arguments { get; internal set; }
     }
 }
