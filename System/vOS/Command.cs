@@ -136,21 +136,27 @@ namespace vOS
             catch (TargetInvocationException tie)
             {
                 Console.WriteLine(tie.InnerException);
+
+                return tie.InnerException.HResult;
             }
             catch (Exception e)
             {
                 Console.WriteLine("Execution failed: " + e.Message);
-                if (e.InnerException != null)
-                    Console.WriteLine(e.InnerException.Message);
-            }
 
-            return 1;
+                if (e.InnerException != null)
+                {
+                    Console.WriteLine(e.InnerException.Message);
+                    return e.InnerException.HResult;
+                }
+                else
+                    return e.HResult;
+
+            }
         }
 
         private static int ExecuteAssembly(Assembly assembly, string[] args)
         {
             var mains = GetMainsWithHelpAttribute(assembly);
-            var mos = assembly.GetLoadedModules();
 
             // No main
             if (mains.Count() < 1)
@@ -267,7 +273,8 @@ namespace vOS
 
             // Must return a integer or not
             if (method.ReturnType != typeof(int) &&
-                         method.ReturnType != typeof(Task<int>) && method.ReturnType != typeof(void))
+                method.ReturnType != typeof(Task<int>) &&
+                method.ReturnType != typeof(void))
                 return false;
 
             return true;

@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using vOS.UI;
+using vOS.UserSpace.Instance;
 using Window = System.Windows.Window;
 
 namespace vOS.WPF

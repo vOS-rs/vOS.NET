@@ -1,23 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using vOS.UserSpace;
+using vOS.UserSpace.Instance;
 
 namespace vOS.API
 {
     public class vOS_API_Init
     {
+        public Console Console;
         public Application Application;
 
-        private Guid ProcessId;
+        public readonly Process CurrentInstance;
 
-        public int Main(string[] arguments, Guid instance, Guid previousInstance, int windowState)
+        private Guid InstanceHandle;
+        private User user;
+
+        public vOS_API_Init(string[] arguments, Guid instance, Guid previousInstance, int windowState)
         {
             Application = new Application();
+            InitConsole();
 
-            ProcessId = instance;
+            user = User.GetCurrentUser(InstanceHandle);
+            CurrentInstance = Process.GetProcessByHandle(InstanceHandle);
+            InstanceHandle = instance;
+
             Application.Arguments = arguments;
+        }
 
-            return 0;
+        private void InitConsole()
+        {
+
+
+            Console = new Console();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using vOS.UserSpace.Instance;
 
 namespace vOS.Console
 {

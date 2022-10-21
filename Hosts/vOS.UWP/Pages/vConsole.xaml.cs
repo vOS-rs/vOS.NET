@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Runtime.Loader;
+using vOS.UserSpace.Instance;
 using Windows.UI.Xaml.Controls;
 
 namespace vOS.UWP.Pages

@@ -6,11 +6,11 @@
     <SharedGUID>b96ff10e-e448-421f-9863-88aea70413ef</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>vOS.API.Bridge</Import_RootNamespace>
+    <Import_RootNamespace>vOS.API</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Application.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Instance.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Console.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)vOS_API_Init.cs" />
   </ItemGroup>
 </Project>

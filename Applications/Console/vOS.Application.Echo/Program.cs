@@ -1,5 +1,6 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using vOS.API;
 
 namespace vOS.Application.Echo
 {
@@ -7,18 +8,18 @@ namespace vOS.Application.Echo
     {
         public string Tag;
 
-        public int Main(string[] args)
+        public static void vMain()
         {
-            vOS.API.Instance.Load();
-            var vArgs = vOS.API.Application.Arguments;
+            var vArgs = API.Application.Arguments;
 
             vArgs[0] = string.Empty;
 
-            System.Console.WriteLine(string.Join(" ", vArgs));
+            Console.WriteLine(string.Join(" ", vArgs));
 
             //BackgroundSpin();
 
-            return 0;
+            System.Console.Out.WriteLine();
+            Process.GetCurrentProcess().
         }
 
         private async void BackgroundSpin()

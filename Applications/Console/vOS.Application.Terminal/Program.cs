@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Security;
+using vOS.UserSpace;
+using vOS.UserSpace.Instance;
 
 namespace vOS.Application.Terminal
 {

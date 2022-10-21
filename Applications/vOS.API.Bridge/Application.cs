@@ -10,9 +10,9 @@ namespace vOS.API
         private static Type ApplicationType;
         private static object ApplicationInstance;
 
-        internal static void Load(object instance)
+        internal static void Load(Assembly assembly, object instance)
         {
-            ApplicationType = Instance.Assembly.GetType("vOS.API.Application");
+            ApplicationType = assembly.GetType("vOS.API.Application");
             ApplicationInstance = instance;
 
             argumentsField = ApplicationType.GetProperty("Arguments");
